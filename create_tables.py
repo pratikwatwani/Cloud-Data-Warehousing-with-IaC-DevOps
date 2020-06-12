@@ -1,9 +1,9 @@
 import configparser
 import psycopg2
-from sql_queries import create_table_queries, drop_table_queries
+from create_sql_queries import create_table_queries, drop_table_queries
 import logging
 
-logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(format='%(asctime)s %(message)s',datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 logging = logging.getLogger(__name__)
 
 def drop_tables(cur, conn):

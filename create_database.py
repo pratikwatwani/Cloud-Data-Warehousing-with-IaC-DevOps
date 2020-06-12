@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 import logging
 
-logging.basicConfig(format='%(asctime)s %(message)s',datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(format='%(asctime)s %(message)s',datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 logging = logging.getLogger(__name__)
 
 start = time.time()
@@ -80,7 +80,7 @@ try:
             }
         )
     )
-    logging.info('IAM role creation complete!')
+
 
 except Exception as e:
     logging.error(e)
@@ -91,13 +91,13 @@ print('==========Attach Role Policy==========')
 logging.info('Attaching role policy to Redshift Cluster')
 iam.attach_role_policy(RoleName = DWH_IAM_ROLE_NAME, 
                       PolicyArn = 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess')
-logging.info('Policy attached!')
+
 
 
 print('==========IAM Role Properties==========')
 logging.info('Extracting IAM Role values')
 roleArn = iam.get_role(RoleName = DWH_IAM_ROLE_NAME)['Role']['Arn']
-logging.info('Extracted IAM role for the cluster!')
+
 
 try:
     print('==========Redshift Cluster==========')
@@ -115,14 +115,18 @@ try:
         
         IamRoles = [roleArn]
     )
-    logging.info('Cluster creation complete!')
 except Exception as e:
     logging.error(e)
 
     
 
-time.sleep(250)
-redshiftProperties = redshift.describe_clusters(ClusterIdentifier = DWH_CLUSTER_IDENTIFIER)['Clusters'][0]   
+#time.sleep(250)
+
+while redshift.describe_clusters(ClusterIdentifier=DWH_CLUSTER_IDENTIFIER)['Clusters'][0]['ClusterStatus'] == 'creating':
+    logging.info('Waiting for cluster availability...')
+    time.sleep(50)
+    
+redshiftProperties = redshift.describe_clusters(ClusterIdentifier = DWH_CLUSTER_IDENTIFIER)['Clusters'][0]     
 DWH_ENDPOINT = str(redshiftProperties['Endpoint']['Address'])
 DWH_ROLE_ARN = str(redshiftProperties['IamRoles'][0]['IamRoleArn'])
 
@@ -136,8 +140,6 @@ try:
         
 except Exception as e:
     logging.error(e)
-
-
 
 try:
     print('==========VPC Access==========')
@@ -153,7 +155,7 @@ try:
         FromPort = int(DWH_PORT),
         ToPort = int(DWH_PORT)
     )
-    logging.info('VPC creation complete!')
+
 except Exception as e:
     logging.error(e)
 
