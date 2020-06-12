@@ -5,6 +5,10 @@ import time
 from datetime import datetime
 import json
 import logging
+import os
+
+os.chdir('.')
+print(os.getcwd())
 
 logging.basicConfig(format='%(asctime)s %(message)s',datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 logging = logging.getLogger(__name__)
@@ -124,7 +128,7 @@ except Exception as e:
 
 while redshift.describe_clusters(ClusterIdentifier=DWH_CLUSTER_IDENTIFIER)['Clusters'][0]['ClusterStatus'] == 'creating':
     logging.info('Waiting for cluster availability...')
-    time.sleep(50)
+    time.sleep(60)
     
 redshiftProperties = redshift.describe_clusters(ClusterIdentifier = DWH_CLUSTER_IDENTIFIER)['Clusters'][0]     
 DWH_ENDPOINT = str(redshiftProperties['Endpoint']['Address'])
@@ -160,4 +164,4 @@ except Exception as e:
     logging.error(e)
 
 end = time.time()-start
-print("Total time utilized {}".format(end))
+print("Total time utilized {:.2f} seconds".format(end))
