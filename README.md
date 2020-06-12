@@ -7,13 +7,21 @@ Building an ETL pipeline that extracts data from Amazon Web Services S3, stages 
 
     ├── README.md
     ├── dwh.cfg
-    ├── run.py
+    ├── run.sh
+    ├── analysis
+        └── Exploratory Data Analysis.ipynb
+        └── Performance Measure.ipynb
     ├── modules
-      └── create_database.py
-      └── create_tables.py
-      └── sql_queries.py
-      └── etl.py
-      └── __init__.py
+        └── create_database.py
+        └── create_tables.py
+        └── sql_queries.py
+        └── etl.py
+        └── __init__.py
+
+## Running instructions
+There is a shell script in the root directory that will call upon the required python scripts. Just use the shell file to run the program, logging will aid you in every step of execution.
+
+Run: `sh run.sh`
 
 ## Exploratory Data Analysis
 ### Data points
@@ -347,17 +355,18 @@ Building an ETL pipeline that extracts data from Amazon Web Services S3, stages 
     time                      0.51                             0.78 
     songplays                 6.08                             1.21 
 
-### Execution Time Comparison (in seconds)
+### Execution Time Comparison (in m seconds)
 
     Table         |    W/ Distribution Style     |     W/O Distribution Style
     ------------------------------------------------------------------------------
-    staging_events            15.15                            1.92 
-    staging_songs            169.99                           181.38 
-    songs                     0.73                             0.79 
-    users                     0.65                             0.67 
-    artists                   0.67                             0.68 
-    time                      0.51                             0.78 
-    songplays                 6.08                             1.21     
+    QUERY 1                    261                             437
+    QUERY 2                    269                             415
+    QUERY 3                    276                             556 
+    QUERY 4                    256                             4680
+    QUERY 5                    263                             360
+    QUERY 6                    264                             508 
+    QUERY 7                    285                             564
+    QUERY 8                    251                             413
         
 
     
